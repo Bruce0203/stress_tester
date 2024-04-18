@@ -49,7 +49,7 @@ fn main() {
             } else {
                 let value = connection_pool.get(event.token().0);
                 let read_len_result = value.stream.read(value.buf.get_mut());
-                if read_len_result.is_err() {
+                if read_len_result.is_err() || read_len_result.unwrap() == 0 {
                     let index = value.index;
                     connection_pool.remove(index);
                     println!("disconnected: Plauyer(index = {:?})", index);
