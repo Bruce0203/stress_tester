@@ -52,6 +52,7 @@ fn main() {
                 if read_len_result.is_err() {
                     let index = value.index;
                     connection_pool.remove(index);
+                    println!("disconnected: Plauyer(index = {:?})", index);
                 }
                 sleep(delay);
             }
