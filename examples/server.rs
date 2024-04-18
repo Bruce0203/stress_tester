@@ -15,7 +15,7 @@ fn main() {
     const SOCKET_READ_BUFFER_SIZE: usize = 100_000;
     let mut poll = Poll::new().unwrap();
     let mut events = Events::with_capacity(initial_connection_capcaity);
-    let mut listener = TcpListener::bind("0.0.0.0:0".parse().unwrap()).unwrap();
+    let mut listener = TcpListener::bind("0.0.0.0:25565".parse().unwrap()).unwrap();
     let addr = listener.local_addr();
     let delay = Duration::from_micros(0);
 

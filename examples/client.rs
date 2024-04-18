@@ -14,10 +14,10 @@ fn main() {
     let mut clients = Vec::<Player>::with_capacity(client_amount);
     let delay = Duration::from_millis(50);
     loop {
+        let stream = TcpStream::connect::<SocketAddr>(addr).unwrap();
+        clients.push(Player { stream });
         for client in clients.iter_mut() {
             client.stream.write_all(payload).unwrap();
         }
-        let mut stream = TcpStream::connect::<SocketAddr>(addr).unwrap();
-        clients.push(Player { stream });
     }
 }
