@@ -1,8 +1,4 @@
-use std::{
-    io::{Cursor, Read},
-    thread::sleep,
-    time::Duration,
-};
+use std::io::{Cursor, Read};
 
 use fast_id_map::prelude::FastMap;
 use mio::{
@@ -11,20 +7,19 @@ use mio::{
 };
 
 fn main() {
-    let initial_connection_capcaity = 128;
+    const INITIAL_CONNECTION_CAPCAITY: usize = 128;
     const SOCKET_READ_BUFFER_SIZE: usize = 100_000;
+
     let mut poll = Poll::new().unwrap();
-    let mut events = Events::with_capacity(initial_connection_capcaity);
+    let mut events = Events::with_capacity(INITIAL_CONNECTION_CAPCAITY);
     let mut listener = TcpListener::bind("0.0.0.0:25565".parse().unwrap()).unwrap();
-    let addr = listener.local_addr();
-    let delay = Duration::from_micros(0);
 
     struct Player {
         stream: TcpStream,
         index: usize,
-        buf: Cursor<Vec<u8>>,
+        buf: Cursor<Box<[u8]>>,
     }
-    let mut connection_pool = FastMap::with_capacity(initial_connection_capcaity);
+    let mut connection_pool = FastMap::with_capacity(INITIAL_CONNECTION_CAPCAITY);
 
     poll.registry()
         .register(&mut listener, mio::Token(usize::MAX), Interest::READABLE)
@@ -41,7 +36,11 @@ fn main() {
                         poll.registry()
                             .register(&mut stream, Token(index), Interest::READABLE)
                             .unwrap();
-                        let value = Ok(Player { stream, index, buf });
+                        let value = Ok(Player {
+                            stream,
+                            index,
+                            buf: Cursor::new(Box::new([0; 100])),
+                        });
                         println!("accepted: Player(index = {:?})", index);
                         value
                     })
@@ -52,9 +51,8 @@ fn main() {
                 if read_len_result.is_err() || read_len_result.unwrap() == 0 {
                     let index = value.index;
                     connection_pool.remove(index);
-                    println!("disconnected: Plauyer(index = {:?})", index);
+                    println!("disconnected: Player(index = {:?})", index);
                 }
-                sleep(delay);
             }
         }
     }
