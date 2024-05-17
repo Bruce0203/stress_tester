@@ -1,4 +1,7 @@
-use std::io::{Cursor, Read};
+use std::{
+    io::{Cursor, Read, Write},
+    time::Instant,
+};
 
 use fast_id_map::prelude::FastMap;
 use mio::{
@@ -48,8 +51,11 @@ fn main() {
                     })
                     .unwrap();
             } else {
+                let start = Instant::now();
                 let value = connection_pool.get(event.token().0);
                 let read_len_result = value.stream.read(value.buf.get_mut());
+                value.stream.write(&[1, 2, 3, 4, 5]).unwrap();
+                println!("elapsed = {:?}", start.elapsed());
                 if read_len_result.is_err() || read_len_result.unwrap() == 0 {
                     let index = value.index;
                     connection_pool.remove(index);

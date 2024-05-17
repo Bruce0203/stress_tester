@@ -17,7 +17,7 @@ fn main() {
 
 fn start_client() {
     const payload: &'static [u8] = &[123; 400];
-    let addr: SocketAddr = "150.230.249.200:25565".parse().unwrap();
+    let addr: SocketAddr = "158.180.88.171:25555".parse().unwrap();
     struct Player {
         stream: TcpStream,
     }
