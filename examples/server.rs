@@ -9,10 +9,12 @@ use mio::{
 fn main() {
     const INITIAL_CONNECTION_CAPCAITY: usize = 128;
     const SOCKET_READ_BUFFER_SIZE: usize = 100_000;
+    const SERVER_PORT: u16 = 443;
 
     let mut poll = Poll::new().unwrap();
     let mut events = Events::with_capacity(INITIAL_CONNECTION_CAPCAITY);
-    let mut listener = TcpListener::bind("0.0.0.0:25565".parse().unwrap()).unwrap();
+    let mut listener =
+        TcpListener::bind(format!("0.0.0.0:{SERVER_PORT}").parse().unwrap()).unwrap();
 
     struct Player {
         stream: TcpStream,
