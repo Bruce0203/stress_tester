@@ -10,7 +10,7 @@ use mio::{
 };
 
 fn main() {
-    const INITIAL_CONNECTION_CAPCAITY: usize = 128;
+    const INITIAL_CONNECTION_CAPCAITY: usize = 512;
     const SOCKET_READ_BUFFER_SIZE: usize = 100_000;
     const SERVER_PORT: u16 = 25555;
 
